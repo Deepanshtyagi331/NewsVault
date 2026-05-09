@@ -25,8 +25,18 @@ const scrapeHackerNews = async () => {
       const points = pointsText ? parseInt(pointsText, 10) : 0;
       
       const author = subtext.find('.hnuser').text();
-      const postedAtText = subtext.find('.age').attr('title') || new Date().toISOString();
-      const postedAt = new Date(postedAtText);
+      const ageElement = subtext.find('.age');
+      const postedAtText = ageElement.attr('title');
+      let postedAt;
+      
+      if (postedAtText) {
+        postedAt = new Date(postedAtText);
+      }
+      
+      // Fallback if Date is invalid or missing
+      if (!postedAt || isNaN(postedAt.getTime())) {
+        postedAt = new Date();
+      }
       
       const hnId = $(el).attr('id');
 
@@ -45,7 +55,7 @@ const scrapeHackerNews = async () => {
       await Story.findOneAndUpdate(
         { hnId: story.hnId },
         { ...story },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: 'after' }
       );
     }
     
