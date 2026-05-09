@@ -24,7 +24,14 @@ const register = async (req, res) => {
     const payload = { user: { id: user.id } };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ token, user: { id: user.id, email: user.email } });
+    res.status(201).json({ 
+      token, 
+      user: { 
+        id: user.id, 
+        email: user.email, 
+        bookmarkedStories: user.bookmarkedStories || [] 
+      } 
+    });
   } catch (error) {
     console.error('Register error:', error.message);
     res.status(500).send('Server Error');
@@ -48,7 +55,14 @@ const login = async (req, res) => {
     const payload = { user: { id: user.id } };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ token, user: { id: user.id, email: user.email } });
+    res.json({ 
+      token, 
+      user: { 
+        id: user.id, 
+        email: user.email, 
+        bookmarkedStories: user.bookmarkedStories || [] 
+      } 
+    });
   } catch (error) {
     console.error('Login error:', error.message);
     res.status(500).send('Server Error');

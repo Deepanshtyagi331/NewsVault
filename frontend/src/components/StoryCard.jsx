@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const StoryCard = ({ story, initialIsBookmarked, onBookmarkChange }) => {
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const navigate = useNavigate();
 
   const handleBookmarkToggle = async () => {
@@ -17,8 +17,14 @@ const StoryCard = ({ story, initialIsBookmarked, onBookmarkChange }) => {
 
     setLoading(true);
     try {
-      await axios.post(`/stories/${story._id}/bookmark`);
+      const res = await axios.post(`/stories/${story._id}/bookmark`);
       setIsBookmarked(!isBookmarked);
+      
+      // Update global user state with new bookmarks list from backend
+      if (res.data.bookmarkedStories) {
+        updateUser({ bookmarkedStories: res.data.bookmarkedStories });
+      }
+      
       if (onBookmarkChange) {
         onBookmarkChange(story._id, !isBookmarked);
       }
