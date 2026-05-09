@@ -64,8 +64,7 @@ VITE_API_URL=http://localhost:5000/api
 1. Start the Backend server:
    ```bash
    cd backend
-   npm run dev
-   ```
+   npm run dev:mock   ```
 
 2. Start the Frontend development server:
    ```bash
